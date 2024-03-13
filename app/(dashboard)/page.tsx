@@ -7,16 +7,23 @@ import { useState } from 'react';
 
 export default function Home() {
   const [useMock, setUseMock] = useState(false);
-  const { data, isLoading } = useWeatherData(useMock);
-  if (data?.current?.time)
-    console.log(format(parseISO(data?.current?.time), 'dd MMM yyyy HH:mm'));
+  const { data, error } = useWeatherData(useMock);
+
+  if (error) {
+    return (
+      <div
+        className={`rounded-lg border-2 border-dashed border-gray-200 p-4 dark:border-gray-700`}>
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div
       className={`rounded-lg border-2 border-dashed border-gray-200 p-4 dark:border-gray-700`}>
       <div className={'mb-4 flex items-center justify-between '}>
         <div className={'italic'}>
-          Last refresh:{' '}
+          Last update at:{' '}
           {data?.current?.time
             ? format(parseISO(data?.current?.time), 'dd MMM yyyy HH:mm O')
             : '--'}
@@ -38,7 +45,7 @@ export default function Home() {
       <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card>
           <div className={'text-[20px]'}>Temperature:</div>
-          <div>
+          <div data-testid={'temperature-data'}>
             <span className={'text-[60px]'}>
               {data?.current?.temperature_2m ?? '--'}
             </span>
@@ -49,7 +56,7 @@ export default function Home() {
         </Card>
         <Card>
           <div className={'text-[20px]'}>Relative humidity:</div>
-          <div>
+          <div data-testid={'humidity-data'}>
             <span className={'text-[60px]'}>
               {data?.current?.relative_humidity_2m ?? '--'}
             </span>
@@ -60,7 +67,7 @@ export default function Home() {
         </Card>
         <Card>
           <div className={'text-[20px]'}>Current rain:</div>
-          <div>
+          <div data-testid={'rain-data'}>
             <span className={'text-[60px]'}>{data?.current?.rain ?? '--'}</span>
             <span className={'text-[40px]'}>{data?.current_units?.rain}</span>
           </div>

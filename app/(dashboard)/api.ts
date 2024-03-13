@@ -38,7 +38,6 @@ async function fetchData(useMock: boolean): Promise<IWeatherResponse> {
       cache: 'no-cache',
     }
   );
-
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
     throw new Error('Failed to fetch data');
@@ -47,7 +46,6 @@ async function fetchData(useMock: boolean): Promise<IWeatherResponse> {
   const weatherData: IWeatherResponse = await res.json();
 
   if (useMock) {
-    const factor = Math.random() * 0.1 + 0.95;
     return {
       ...weatherData,
       current: {
@@ -66,7 +64,9 @@ async function fetchData(useMock: boolean): Promise<IWeatherResponse> {
 
 export const useWeatherData = (useMock: boolean = false) => {
   const [data, setData] = useState<IWeatherResponse | undefined>(undefined);
-  const [isLoading, setLoading] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
   const timerRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
@@ -75,6 +75,10 @@ export const useWeatherData = (useMock: boolean = false) => {
       fetchData(useMock)
         .then((data) => {
           setData(data);
+        })
+        .catch((err) => {
+          setError(err.message);
+          throw new Error(err);
         })
         .finally(() => {
           setLoading(false);
@@ -92,5 +96,5 @@ export const useWeatherData = (useMock: boolean = false) => {
     };
   }, [useMock]);
 
-  return { data, isLoading };
+  return { data, isLoading, error };
 };
