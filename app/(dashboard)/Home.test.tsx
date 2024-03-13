@@ -47,7 +47,7 @@ describe('Home component', () => {
 
   test('renders without crashing', () => {
     render(<Home />);
-    expect(screen.getByText(/Last refresh:/)).toBeInTheDocument();
+    expect(screen.getByText(/Last update at:/)).toBeInTheDocument();
   });
 
   test('should display an error message when fetching weather data', () => {
@@ -60,7 +60,7 @@ describe('Home component', () => {
     });
 
     render(<Home />);
-    expect(screen.queryByText(/Last refresh:/i)).toBeNull();
+    expect(screen.queryByText(/Last update at:/i)).toBeNull();
     expect(screen.getByText(/Error/i)).toBeInTheDocument();
   });
 
@@ -82,7 +82,7 @@ describe('Home component', () => {
     );
 
     render(<Home />);
-    expect(await screen.findByText(/Last refresh:/)).toBeInTheDocument();
+    expect(await screen.findByText(/Last update at:/)).toBeInTheDocument();
     expect(screen.getByTestId('temperature-data').textContent).toBe('11°C');
     expect(screen.getByTestId('humidity-data').textContent).toBe('80%');
     expect(screen.getByTestId('rain-data').textContent).toBe('10mm');
